@@ -26,6 +26,13 @@ export default function Unsplash({ items, user }: Props) {
 						<Photo i={i} item={item} key={item.id} />
 					))}
 				</div>
+
+				<div className="copyright">
+					<span className="hr" />
+					<div>
+						Created by <a href="https://siamak.me">Siamak</a>.
+					</div>
+				</div>
 			</div>
 			<style jsx>{`
 				.wrapper {
@@ -48,6 +55,35 @@ export default function Unsplash({ items, user }: Props) {
 					grid-row-gap: 2rem;
 					justify-content: center;
 					align-items: start;
+				}
+
+				.copyright {
+					display: flex;
+					justify-content: center;
+					margin: 10vh 0 2vh;
+					flex-direction: column;
+					align-items: center;
+				}
+
+				.copyright a {
+					color: #9677ff;
+				}
+
+				.hr {
+					display: inline-flex;
+					width: 4rem;
+					height: 2px;
+					margin-bottom: 1rem;
+					background: rgba(255, 255, 255, 0.1);
+				}
+
+				@media (prefers-color-scheme: light) {
+					.hr {
+						background: rgba(0, 0, 0, 0.1);
+					}
+					.copyright a {
+						color: #4114db;
+					}
 				}
 			`}</style>
 		</>

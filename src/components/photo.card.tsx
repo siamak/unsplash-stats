@@ -208,10 +208,10 @@ function Charts({ item }: { item: Item }) {
 						<LineChart
 							data={item.statistics.views.historical.values}
 							margin={{
-								top: 5,
-								right: 0,
-								left: 0,
-								bottom: 5,
+								top: 8,
+								right: 16,
+								left: 16,
+								bottom: 8,
 							}}
 						>
 							<Tooltip content={<CTooltip />} />
@@ -228,10 +228,10 @@ function Charts({ item }: { item: Item }) {
 						<LineChart
 							data={item.statistics.downloads.historical.values}
 							margin={{
-								top: 5,
-								right: 0,
-								left: 0,
-								bottom: 5,
+								top: 8,
+								right: 16,
+								left: 16,
+								bottom: 8,
 							}}
 						>
 							<Tooltip content={<CTooltip />} />
