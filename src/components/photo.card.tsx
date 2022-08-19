@@ -151,7 +151,7 @@ const Photo = ({ item, i }: Props) => {
 				}
 
 				.image {
-					height: 300px;
+					height: 450px;
 					width: 100%;
 					position: relative;
 					margin: 0 auto 0.5rem;
