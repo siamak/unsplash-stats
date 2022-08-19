@@ -2,9 +2,13 @@
 import React from "react";
 import Head from "next/head";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import { GetServerSideProps } from "next";
 import { Item } from "../src/interface/app.interface";
-import Photo from "../src/components/photo.card";
+
+const Photo = dynamic(() => import("../src/components/photo.card"), {
+	ssr: false,
+});
 
 type Props = { items: Item[]; user: string };
 
@@ -40,7 +44,7 @@ export default function Unsplash({ items, user }: Props) {
 					display: grid;
 					grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 					flex-wrap: wrap;
-					grid-gap: 1rem;
+					grid-gap: 2rem;
 					grid-row-gap: 2rem;
 					justify-content: center;
 					align-items: start;
@@ -75,6 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	} catch (error) {
 		return {
 			props: { items: [], user },
+			notFound: true,
 		};
 	}
 };

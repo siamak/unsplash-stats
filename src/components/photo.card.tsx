@@ -16,6 +16,8 @@ function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
+
 const Photo = ({ item, i }: Props) => {
 	const featured = useMemo(() => {
 		const topcis = item.topic_submissions;
@@ -37,7 +39,11 @@ const Photo = ({ item, i }: Props) => {
 				<div className="featured">
 					<span className="span">Featured in</span>
 					{featured.map((feature) => (
-						<span className="span badge" key={feature}>
+						<span
+							style={{ background: colors[Math.floor(Math.random() * colors.length)] }}
+							className="span badge"
+							key={feature}
+						>
 							{feature}
 						</span>
 					))}
@@ -58,10 +64,10 @@ const Photo = ({ item, i }: Props) => {
 				</li>
 			</ul>
 
+			<Charts item={item} />
 			<p className="hint">
 				Created At: <b>{new Date(item.created_at).toDateString()}</b>
 			</p>
-			<Charts item={item} />
 			<style jsx>{`
 				.heading {
 					font-size: 1rem;
@@ -93,6 +99,8 @@ const Photo = ({ item, i }: Props) => {
 					background: #66e297;
 					border-radius: 30px;
 					opacity: 1;
+					color: #19191c;
+
 					margin: 0 0.15rem;
 				}
 
@@ -106,7 +114,7 @@ const Photo = ({ item, i }: Props) => {
 					display: flex;
 					align-items: center;
 					list-style: none;
-					margin: 0.75rem 0;
+					margin: 1rem 0 0.75rem;
 					padding: 0;
 					flex-wrap: wrap;
 				}
@@ -158,6 +166,38 @@ const Photo = ({ item, i }: Props) => {
 	);
 };
 
+type TooltipProps = {
+	active?: boolean;
+	payload?: {
+		chartType: undefined;
+		color: string;
+		dataKey: string;
+		fill: string;
+		formatter: undefined;
+		name: string;
+		payload: { date: string; value: number };
+		points: string[];
+		stroke: string;
+		strokeWidth: number;
+		type: undefined;
+		unit: undefined;
+		value: number;
+	}[];
+};
+
+const CTooltip = ({ active, payload }: TooltipProps) => {
+	if (active && payload && payload.length) {
+		return (
+			<div className="tooltip">
+				<p className="num">{payload[0].value}</p>
+				<p className="hint">{`${payload[0].payload.date}`}</p>
+			</div>
+		);
+	}
+
+	return null;
+};
+
 function Charts({ item }: { item: Item }) {
 	return (
 		<>
@@ -174,7 +214,7 @@ function Charts({ item }: { item: Item }) {
 								bottom: 5,
 							}}
 						>
-							<Tooltip />
+							<Tooltip content={<CTooltip />} />
 							<Line type="monotone" dataKey="value" stroke="#7E70FF" />
 						</LineChart>
 					</ResponsiveContainer>
@@ -194,7 +234,7 @@ function Charts({ item }: { item: Item }) {
 								bottom: 5,
 							}}
 						>
-							<Tooltip />
+							<Tooltip content={<CTooltip />} />
 							<Line type="monotone" dataKey="value" stroke="#44CF6C" />
 						</LineChart>
 					</ResponsiveContainer>

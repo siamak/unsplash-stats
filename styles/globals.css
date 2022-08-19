@@ -29,3 +29,38 @@ body {
 		background: #19191c;
 	}
 }
+
+.tooltip {
+	background-color: #252731;
+	padding: 0.75rem 1rem;
+	border-radius: 24px;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	font-size: 0.85rem;
+	line-height: 1.2;
+	color: #edf2f4;
+	box-shadow: 0px 1px 3px rgb(9 10 15 / 25%), 0px 4px 16px rgb(9 10 15 / 10%), 0px 8px 24px rgb(9 10 15 / 10%),
+		inset 0px 1px 1px #323543;
+}
+
+@media (prefers-color-scheme: light) {
+	.tooltip {
+		color: #252731;
+		background: #fff;
+		box-shadow: 0px 1px 3px rgb(9 10 15 / 1%), 0px 4px 16px rgb(9 10 15 / 10%), 0px 8px 24px rgb(9 10 15 / 10%),
+			inset 0px 1px 1px #f2f4f5;
+	}
+}
+
+.tooltip .num {
+	margin: 0;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.tooltip .hint {
+	font-size: 0.75rem;
+	opacity: 0.75;
+	margin: 0;
+}
