@@ -189,8 +189,8 @@ const CTooltip = ({ active, payload }: TooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="tooltip">
-				<p className="num">{payload[0].value}</p>
-				<p className="hint">{`${payload[0].payload.date}`}</p>
+				<p className="num">{numberWithCommas(payload[0].value)}</p>
+				<p className="hint">{payload[0].payload.date}</p>
 			</div>
 		);
 	}
