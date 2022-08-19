@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { memo, useMemo } from "react";
 import { LineChart, Line, Tooltip, ResponsiveContainer } from "recharts";
+import Image from "next/image";
 import { Item } from "../interface/app.interface";
 
 type Props = {
@@ -28,7 +28,17 @@ const Photo = ({ item, i }: Props) => {
 
 	return (
 		<div key={item.id} className="photo">
-			<img src={item.urls.regular} alt={item.alt_description} />
+			{/* <img src={item.urls.regular} alt={item.alt_description} /> */}
+			<div className="image">
+				<Image
+					src={item.urls.regular}
+					alt={item.alt_description}
+					width={item.width}
+					height={item.height}
+					layout="fill"
+					objectFit="cover"
+				/>
+			</div>
 			<h3 className="heading">
 				<a href={item.links.html} target="_blank" rel="noreferrer">
 					{i + 1}. {item.description || "UNTITLED"}
@@ -40,7 +50,9 @@ const Photo = ({ item, i }: Props) => {
 					<span className="span">Featured in</span>
 					{featured.map((feature) => (
 						<span
-							style={{ background: colors[Math.floor(Math.random() * colors.length)] }}
+							style={{
+								background: colors[Math.floor(Math.random() * colors.length)],
+							}}
 							className="span badge"
 							key={feature}
 						>
@@ -138,18 +150,23 @@ const Photo = ({ item, i }: Props) => {
 					opacity: 0.75;
 				}
 
-				img {
-					display: block;
-					margin: 0 auto 0.5rem;
+				.image {
 					height: 300px;
 					width: 100%;
-					border-radius: 0.25rem;
-					object-fit: cover;
+					position: relative;
+					margin: 0 auto 0.5rem;
 					background: rgba(0, 0, 0, 0.1);
+					overflow: hidden;
+					border-radius: 0.25rem;
+				}
+
+				.image img {
+					display: block;
+					border-radius: 0.25rem;
 				}
 
 				@media (prefers-color-scheme: dark) {
-					img {
+					.image {
 						background: rgba(255, 255, 255, 0.1);
 					}
 				}
