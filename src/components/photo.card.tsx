@@ -36,6 +36,7 @@ const Photo = ({ item, i }: Props) => {
 					width={item.width}
 					height={item.height}
 					layout="fill"
+					loading="lazy"
 					objectFit="cover"
 				/>
 			</div>
@@ -151,18 +152,13 @@ const Photo = ({ item, i }: Props) => {
 				}
 
 				.image {
-					height: 450px;
+					height: 400px;
 					width: 100%;
 					position: relative;
 					margin: 0 auto 0.5rem;
 					background: rgba(0, 0, 0, 0.1);
 					overflow: hidden;
-					border-radius: 0.25rem;
-				}
-
-				.image img {
-					display: block;
-					border-radius: 0.25rem;
+					border-radius: 0.5rem;
 				}
 
 				@media (prefers-color-scheme: dark) {
