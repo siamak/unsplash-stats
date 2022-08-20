@@ -9,12 +9,11 @@ import { GetServerSideProps } from "next";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
 
-const Photo = dynamic(() => import("../src/components/photo.card"), {
-	ssr: false,
-});
-
 const Layout = dynamic(() => import("../src/components/root.layout"), {
 	ssr: true,
+});
+const Photo = dynamic(() => import("../src/components/photo.card"), {
+	ssr: false,
 });
 
 type Props = { user: string };

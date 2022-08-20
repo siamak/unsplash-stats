@@ -8,13 +8,16 @@ import { GetServerSideProps } from "next";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
 
+const Layout = dynamic(() => import("../src/components/root.layout"), {
+	ssr: true,
+});
 const Photo = dynamic(() => import("../src/components/photo.card"), {
 	ssr: false,
 });
 
 type Props = { user: string };
 
-export default function TopGainers({ user }: Props) {
+export default function Popular({ user }: Props) {
 	const [repo, setRepo] = useState(user);
 	const [val, setVal] = useState(repo);
 
@@ -29,56 +32,46 @@ export default function TopGainers({ user }: Props) {
 	const photos = data ? [].concat(...data) : [];
 
 	return (
-		<>
-			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<title>@{user} – Unsplash statistics</title>
-			</Head>
-
-			<div className="wrapper">
-				<div className="form">
-					<input
-						value={val}
-						className="form-input"
-						onChange={(e) => setVal(e.target.value)}
-						placeholder="onlysiamak"
-					/>
-					<button
-						className="form-button"
-						onClick={() => {
-							setRepo(val);
-							setSize(1);
-						}}
-					>
-						Show photos
-					</button>
-				</div>
-
-				<div className="grid">
-					{photos.map((photo: Item, i) => (
-						<Photo i={i} item={photo} key={photo.id} />
-					))}
-				</div>
-
-				<div className="copyright">
-					<span className="hr" />
-					<div>
-						Created by <a href="https://siamak.me">Siamak</a>.
-					</div>
-				</div>
+		<Layout user={user}>
+			<div className="form">
+				<input
+					value={val}
+					className="form-input"
+					onChange={(e) => setVal(e.target.value)}
+					placeholder="onlysiamak"
+				/>
+				<button
+					className="form-button"
+					onClick={() => {
+						setRepo(val);
+						setSize(1);
+					}}
+				>
+					Show photos
+				</button>
 			</div>
-			<style jsx>{`
-				.wrapper {
-					width: 100%;
 
-					padding: 4rem;
-					margin-right: auto;
-					margin-left: auto;
-				}
-				@media (max-width: 768px) {
-					.wrapper {
-						padding: 2rem 1rem;
-					}
+			<div className="grid">
+				{photos.map((photo: Item, i) => (
+					<Photo i={i} item={photo} key={photo.id} />
+				))}
+			</div>
+
+			<style jsx>{`
+				.btn {
+					background-color: #141414;
+					border: 1px solid rgba(54, 54, 54, 0.6);
+					opacity: 1;
+					font-weight: 500;
+					position: relative;
+					outline: none;
+					border-radius: 50px;
+					padding: 1rem;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					cursor: pointer;
+					margin-top: 0.5rem;
 				}
 
 				.form {
@@ -126,37 +119,8 @@ export default function TopGainers({ user }: Props) {
 					flex-direction: column;
 					align-items: center;
 				}
-
-				.copyright {
-					display: flex;
-					justify-content: center;
-					margin: 2rem 0;
-					flex-direction: column;
-					align-items: center;
-				}
-
-				.copyright a {
-					color: #9677ff;
-				}
-
-				.hr {
-					display: inline-flex;
-					width: 4rem;
-					height: 2px;
-					margin-bottom: 1rem;
-					background: rgba(255, 255, 255, 0.1);
-				}
-
-				@media (prefers-color-scheme: light) {
-					.hr {
-						background: rgba(0, 0, 0, 0.1);
-					}
-					.copyright a {
-						color: #4114db;
-					}
-				}
 			`}</style>
-		</>
+		</Layout>
 	);
 }
 
