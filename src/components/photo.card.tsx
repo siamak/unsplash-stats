@@ -5,7 +5,6 @@ import { Item } from "../interface/app.interface";
 
 type Props = {
 	item: Item;
-	gain: any;
 	i: number;
 };
 
@@ -19,7 +18,7 @@ function capitalize(str: string) {
 
 const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
 
-const Photo = ({ item, i, gain }: Props) => {
+const Photo = ({ item, i }: Props) => {
 	const featured = useMemo(() => {
 		const topcis = item.featured;
 		return Object.entries(topcis)
@@ -75,8 +74,8 @@ const Photo = ({ item, i, gain }: Props) => {
 				</li>
 				<li>
 					<b>
-						<span className={gain > 0 ? "gain-green" : "gain-red"}>
-							{numberWithCommas(gain)}%
+						<span className={item.gains > 0 ? "gain-green" : "gain-red"}>
+							{numberWithCommas(item.gains)}%
 						</span>
 					</b>
 					<span className="label">Gains</span>

@@ -1,11 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import NProgress from "nprogress";
 import useSWRInfinite from "swr/infinite";
 import { Item } from "../src/interface/app.interface";
-import useInfiniteScroll from "react-infinite-scroll-hook";
 import { GetServerSideProps } from "next";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -17,50 +14,19 @@ const Photo = dynamic(() => import("../src/components/photo.card"), {
 
 type Props = { user: string };
 
-export default function Unsplash({ user }: Props) {
+export default function TopGainers({ user }: Props) {
 	const [repo, setRepo] = useState(user);
 	const [val, setVal] = useState(repo);
-	const [hasNextPage, setNextPage] = useState(true);
 
-	const { data, error, size, setSize, isValidating } = useSWRInfinite(
+	const { data, setSize } = useSWRInfinite(
 		(index) =>
-			`/api/photos?username=${repo}&p=${index + 1}&per_page=${PAGE_SIZE}`,
+			`/api/photos?username=${repo}&p=${
+				index + 1
+			}&per_page=${PAGE_SIZE}&type=top_gainers`,
 		fetcher
 	);
 
 	const photos = data ? [].concat(...data) : [];
-	const isLoadingInitialData = !data && !error;
-	const isLoadingMore =
-		isLoadingInitialData ||
-		(size > 0 && data && typeof data[size - 1] === "undefined");
-	const isEmpty = data?.[0]?.length === 0;
-	const isReachingEnd =
-		isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
-	const isRefreshing = isValidating && data && data.length === size;
-
-	useEffect(() => {
-		setNextPage(Boolean(!isReachingEnd));
-	}, [isReachingEnd]);
-
-	useEffect(() => {
-		if (isLoadingMore) {
-			NProgress.start();
-		} else {
-			NProgress.done();
-		}
-	}, [isLoadingMore]);
-
-	const onLoadMore = () => {
-		setSize((prev) => prev + 1);
-	};
-
-	const [albumRef] = useInfiniteScroll({
-		loading: isValidating,
-		disabled: !!error,
-		onLoadMore,
-		hasNextPage,
-		rootMargin: `0px 0px 400px 0px`,
-	});
 
 	return (
 		<>
@@ -92,31 +58,6 @@ export default function Unsplash({ user }: Props) {
 					{photos.map((photo: Item, i) => (
 						<Photo i={i} item={photo} key={photo.id} />
 					))}
-				</div>
-
-				<div className="pagination" ref={albumRef}>
-					{isValidating && <div>Loading...</div>}
-					<p>
-						showing {size} page(s) of {isLoadingMore ? "..." : photos.length}{" "}
-						photo(s){" "}
-						<button
-							disabled={isLoadingMore || isReachingEnd}
-							onClick={() => setSize(size + 1)}
-						>
-							{isLoadingMore
-								? "loading..."
-								: isReachingEnd
-								? "no more photos"
-								: "load more"}
-						</button>
-						{/* <button disabled={isRefreshing} onClick={() => mutate()}>
-							{isRefreshing ? "refreshing..." : "refresh"}
-						</button>
-						<button disabled={!size} onClick={() => setSize(0)}>
-							clear
-						</button> */}
-					</p>
-					{isEmpty ? <p>Yay, no photos found.</p> : null}
 				</div>
 
 				<div className="copyright">

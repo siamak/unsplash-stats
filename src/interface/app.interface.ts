@@ -198,4 +198,5 @@ export interface Item {
 	image: Image;
 	likes: number;
 	statistics: Statistics;
+	gains: number;
 }
