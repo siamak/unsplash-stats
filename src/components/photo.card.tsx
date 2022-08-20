@@ -5,6 +5,7 @@ import { Item } from "../interface/app.interface";
 
 type Props = {
 	item: Item;
+	gain: any;
 	i: number;
 };
 
@@ -18,9 +19,9 @@ function capitalize(str: string) {
 
 const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
 
-const Photo = ({ item, i }: Props) => {
+const Photo = ({ item, i, gain }: Props) => {
 	const featured = useMemo(() => {
-		const topcis = item.topic_submissions;
+		const topcis = item.featured;
 		return Object.entries(topcis)
 			.filter((e) => e[1].status === "approved")
 			.map((p) => p[0].split("-").map(capitalize).join(" "));
@@ -28,21 +29,18 @@ const Photo = ({ item, i }: Props) => {
 
 	return (
 		<div key={item.id} className="photo">
-			{/* <img src={item.urls.regular} alt={item.alt_description} /> */}
 			<div className="image">
 				<Image
-					src={item.urls.regular}
-					alt={item.alt_description}
-					width={item.width}
-					height={item.height}
+					src={item.image.regular}
+					alt={item.alt_desc}
 					layout="fill"
 					loading="lazy"
 					objectFit="cover"
 				/>
 			</div>
 			<h3 className="heading">
-				<a href={item.links.html} target="_blank" rel="noreferrer">
-					{i + 1}. {item.description || "UNTITLED"}
+				<a href={item.link} target="_blank" rel="noreferrer">
+					{i + 1}. {item.title || item.alt_desc || "UNTITLED"}
 				</a>
 			</h3>
 
@@ -75,6 +73,14 @@ const Photo = ({ item, i }: Props) => {
 					<b>{numberWithCommas(item.likes)}</b>
 					<span className="label">Likes</span>
 				</li>
+				<li>
+					<b>
+						<span className={gain > 0 ? "gain-green" : "gain-red"}>
+							{numberWithCommas(gain)}%
+						</span>
+					</b>
+					<span className="label">Gains</span>
+				</li>
 			</ul>
 
 			<Charts item={item} />
@@ -90,6 +96,13 @@ const Photo = ({ item, i }: Props) => {
 					-webkit-line-clamp: 2;
 					-webkit-box-orient: vertical;
 					overflow: hidden;
+				}
+
+				.gain-red {
+					color: #ee3171;
+				}
+				.gain-green {
+					color: #66e297;
 				}
 
 				.featured {
@@ -133,7 +146,7 @@ const Photo = ({ item, i }: Props) => {
 				}
 
 				.meta li {
-					flex: 1 1 33.3%;
+					flex: 1 1 25%;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
