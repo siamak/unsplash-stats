@@ -8,8 +8,8 @@ type Props = {
 	i: number;
 };
 
-function numberWithCommas(x: number | string) {
-	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+function numberWithCommas(str: number | string) {
+	return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function capitalize(str: string) {
@@ -61,21 +61,21 @@ const Photo = ({ item, i }: Props) => {
 			)}
 			<ul className="meta">
 				<li>
-					<b>{numberWithCommas(item.statistics.views.total)}</b>
+					<b>{numberWithCommas(item.statistics.views.total || 0)}</b>
 					<span className="label">Views</span>
 				</li>
 				<li>
-					<b>{numberWithCommas(item.statistics.downloads.total)}</b>
+					<b>{numberWithCommas(item.statistics.downloads.total || 0)}</b>
 					<span className="label">Downloads</span>
 				</li>
 				<li>
-					<b>{numberWithCommas(item.likes)}</b>
+					<b>{numberWithCommas(item.likes || 0)}</b>
 					<span className="label">Likes</span>
 				</li>
 				<li>
 					<b>
 						<span className={item.gains > 0 ? "gain-green" : "gain-red"}>
-							{numberWithCommas(item.gains)}%
+							{numberWithCommas(item.gains || 0)}%
 						</span>
 					</b>
 					<span className="label">Gains</span>
@@ -214,7 +214,7 @@ const CTooltip = ({ active, payload }: TooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="tooltip">
-				<p className="num">{numberWithCommas(payload[0].value)}</p>
+				<p className="num">{numberWithCommas(payload[0].value || 0)}</p>
 				<p className="hint">{payload[0].payload.date}</p>
 			</div>
 		);
