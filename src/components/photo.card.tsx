@@ -21,7 +21,6 @@ const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
 const Photo = ({ item, i }: Props) => {
 	const featured = useMemo(() => {
 		const topics = item.featured;
-		console.log({ topics });
 		return Object.entries(topics)
 			.filter((e) => e[1].status === "approved")
 			.map((p: any) => ({
@@ -29,8 +28,6 @@ const Photo = ({ item, i }: Props) => {
 				time: new Date(p[1].approved_on).toString(),
 			}));
 	}, [item]);
-
-	console.log({ featured });
 
 	return (
 		<div key={item.id} className="photo">
