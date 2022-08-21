@@ -41,16 +41,17 @@ const topGainers = async (user: string) => {
 						views: d.statistics.views,
 						downloads: d.statistics.downloads,
 					},
-					gains: Number(percentages.toFixed(2)) * 100,
+					gains: Number((percentages * 100).toFixed(2)),
 				};
 			})
 			// .sort((a: any, b: any) => (a.gains > b.gains ? -1 : 1));
 			.sort(
 				firstBy((v1: any, v2: any) => {
 					return v2.gains - v1.gains;
-				}).thenBy((v1: any, v2: any) => {
-					return v1.statistics.views.total - v2.statistics.views.total;
 				})
+				// .thenBy((v1: any, v2: any) => {
+				// 	return v1.statistics.views.total - v2.statistics.views.total;
+				// })
 			);
 		return lightweightData;
 	} catch (error) {
@@ -92,8 +93,6 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 					link: d.links.html,
 					image: {
 						regular: d.urls.regular,
-						// width: d.width,
-						// height: d.height,
 					},
 
 					likes: d.likes,
@@ -101,7 +100,7 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 						views: d.statistics.views,
 						downloads: d.statistics.downloads,
 					},
-					gains: Number(percentages.toFixed(2)) * 100,
+					gains: Number((percentages * 100).toFixed(2)),
 				};
 			});
 
