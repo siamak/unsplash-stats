@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import Head from "next/head";
+import React from "react";
 import dynamic from "next/dynamic";
 import useSWRInfinite from "swr/infinite";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
+import { useStore } from "laco-react";
+import UserStore from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -18,12 +19,11 @@ const Photo = dynamic(() => import("../src/components/photo.card"), {
 type Props = { user: string };
 
 export default function Popular({ user }: Props) {
-	const [repo, setRepo] = useState(user);
-	const [val, setVal] = useState(repo);
+	const state = useStore(UserStore);
 
-	const { data, setSize } = useSWRInfinite(
+	const { data } = useSWRInfinite(
 		(index) =>
-			`/api/photos?username=${repo}&p=${
+			`/api/photos?username=${state.username}&p=${
 				index + 1
 			}&per_page=${PAGE_SIZE}&type=top_gainers`,
 		fetcher
@@ -33,24 +33,6 @@ export default function Popular({ user }: Props) {
 
 	return (
 		<Layout user={user}>
-			<div className="form">
-				<input
-					value={val}
-					className="form-input"
-					onChange={(e) => setVal(e.target.value)}
-					placeholder="onlysiamak"
-				/>
-				<button
-					className="form-button"
-					onClick={() => {
-						setRepo(val);
-						setSize(1);
-					}}
-				>
-					Show photos
-				</button>
-			</div>
-
 			<div className="grid">
 				{photos.map((photo: Item, i) => (
 					<Photo i={i} item={photo} key={photo.id} />

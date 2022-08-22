@@ -21,12 +21,15 @@ const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
 const Photo = ({ item, i }: Props) => {
 	const featured = useMemo(() => {
 		const topics = item.featured;
-		return Object.entries(topics)
-			.filter((e) => e[1].status === "approved")
-			.map((p: any) => ({
-				topic: p[0].split("-").map(capitalize).join(" "),
-				time: new Date(p[1].approved_on).toString(),
-			}));
+		return (
+			Object.entries(topics)
+				// .filter((e) => e[1].status === "approved")
+				.map((p: any) => ({
+					topic: p[0].split("-").map(capitalize).join(" "),
+					time: new Date(p[1].approved_on).toString(),
+					status: p[1].status,
+				}))
+		);
 	}, [item]);
 
 	return (
@@ -45,19 +48,20 @@ const Photo = ({ item, i }: Props) => {
 					{i + 1}. {item.title || item.alt_desc || "UNTITLED"}
 				</a>
 			</h3>
-
 			{featured.length > 0 && (
 				<div className="featured">
 					<span className="span">Featured in</span>
 					{featured.map((feature) => (
 						<span
+							className={`${feature.status} span badge`}
 							style={{
 								background: colors[Math.floor(Math.random() * colors.length)],
 							}}
-							className="span badge"
 							key={feature.topic}
 							title={feature.time}
 						>
+							{feature.status === "rejected" ? "× " : ""}
+							{feature.status === "unevaluated" ? "• " : ""}
 							{feature.topic}
 						</span>
 					))}
@@ -85,7 +89,6 @@ const Photo = ({ item, i }: Props) => {
 					<span className="label">Gains</span>
 				</li>
 			</ul>
-
 			<Charts item={item} />
 			<p className="hint">
 				Created At: <b>{new Date(item.created_at).toDateString()}</b>
@@ -131,6 +134,16 @@ const Photo = ({ item, i }: Props) => {
 					color: #19191c;
 
 					margin: 0 0.15rem;
+				}
+
+				.featured .unevaluated {
+					opacity: 0.75;
+					background: #666 !important;
+				}
+
+				.featured .rejected {
+					opacity: 0.75;
+					background: #ee3171 !important;
 				}
 
 				@media (prefers-color-scheme: dark) {
