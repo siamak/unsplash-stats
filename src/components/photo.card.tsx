@@ -21,15 +21,13 @@ const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
 const Photo = ({ item, i }: Props) => {
 	const featured = useMemo(() => {
 		const topics = item.featured;
-		return (
-			Object.entries(topics)
-				// .filter((e) => e[1].status === "approved")
-				.map((p: any) => ({
-					topic: p[0].split("-").map(capitalize).join(" "),
-					time: new Date(p[1].approved_on).toString(),
-					status: p[1].status,
-				}))
-		);
+		return Object.entries(topics)
+			.filter((e) => e[1].status === "approved")
+			.map((p: any) => ({
+				topic: p[0].split("-").map(capitalize).join(" "),
+				time: new Date(p[1].approved_on).toString(),
+				status: p[1].status,
+			}));
 	}, [item]);
 
 	return (
