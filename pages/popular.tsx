@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
 import useSWRInfinite from "swr/infinite";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore from "../src/store/store";
+import UserStore, { setUser } from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -20,6 +20,10 @@ type Props = { user: string };
 
 export default function Popular({ user }: Props) {
 	const state = useStore(UserStore);
+
+	useEffect(() => {
+		setUser(user);
+	}, [user]);
 
 	const { data } = useSWRInfinite(
 		(index) =>

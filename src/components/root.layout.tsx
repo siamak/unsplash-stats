@@ -17,14 +17,14 @@ const Layout = ({ children, user }: Props) => {
 	const state = useStore(UserStore);
 	const [val, setVal] = useState(state.username);
 
+	useEffect(() => {
+		setUser(val);
+	}, [val]);
+
 	const { data, error } = useSWR(
 		`/api/profile?username=${state.username}`,
 		fetcher
 	);
-
-	useEffect(() => {
-		setUser(user);
-	}, [user]);
 
 	return (
 		<>
@@ -43,9 +43,9 @@ const Layout = ({ children, user }: Props) => {
 					<div className="center">
 						<div className={!!val ? "form valid" : "form"}>
 							<input
-								value={val}
+								value={state.username}
 								onChange={(e) => setVal(e.target.value)}
-								placeholder="onlysiamak"
+								placeholder="Enter your username ..."
 							/>
 							<button
 								onClick={() => {

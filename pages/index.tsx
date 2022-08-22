@@ -6,7 +6,7 @@ import { Item } from "../src/interface/app.interface";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore from "../src/store/store";
+import UserStore, { setUser } from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -58,6 +58,10 @@ export default function Unsplash({ user }: Props) {
 	const onLoadMore = () => {
 		setSize((prev) => prev + 1);
 	};
+
+	useEffect(() => {
+		setUser(user);
+	}, [user]);
 
 	const [ref] = useInfiniteScroll({
 		loading: isValidating,
