@@ -58,13 +58,22 @@ const Layout = ({ children, user }: Props) => {
 					</div>
 
 					<div className="menu">
-						<Link className="menu-link" href={"/"}>
+						<Link
+							className="menu-link"
+							href={{ pathname: "/", query: { username: state.username } }}
+						>
 							<a>
 								<span>Overall</span>
 							</a>
 						</Link>
 
-						<Link className="menu-link" href={"/popular"}>
+						<Link
+							className="menu-link"
+							href={{
+								pathname: "/popular",
+								query: { username: state.username },
+							}}
+						>
 							<a>
 								<span>Popular</span>
 							</a>

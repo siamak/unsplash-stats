@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
-import useSWRInfinite from "swr/infinite";
+import useSWR from "swr";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
@@ -25,11 +25,8 @@ export default function Popular({ user }: Props) {
 		setUser(user);
 	}, [user]);
 
-	const { data } = useSWRInfinite(
-		(index) =>
-			`/api/photos?username=${state.username}&p=${
-				index + 1
-			}&per_page=${PAGE_SIZE}&type=top_gainers`,
+	const { data } = useSWR(
+		`/api/photos?username=${state.username}&p=1&per_page=${PAGE_SIZE}&type=top_gainers`,
 		fetcher
 	);
 
