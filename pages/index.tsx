@@ -150,7 +150,7 @@ export default function Unsplash({ user }: Props) {
 
 				.grid {
 					display: grid;
-					grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+					grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 					flex-wrap: wrap;
 					grid-gap: 2rem;
 					grid-row-gap: 2rem;

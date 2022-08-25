@@ -11,6 +11,7 @@ const profile = async (req: NextApiRequest, res: NextApiResponse<any>) => {
 		);
 
 		const data = response.data;
+		console.log({ data });
 
 		const profile = {
 			id: data.id,

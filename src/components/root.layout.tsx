@@ -12,6 +12,9 @@ type Props = {
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+function numberWithCommas(str: number | string) {
+	return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 const Layout = ({ children, user }: Props) => {
 	const state = useStore(UserStore);
@@ -118,7 +121,33 @@ const Layout = ({ children, user }: Props) => {
 								)}
 							</p>
 
-							{/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+							<ul className="meta">
+								<li>
+									<b>{numberWithCommas(data.followers_count || 0)}</b>
+									<span className="label">Followers</span>
+								</li>
+								<li>
+									<b>{numberWithCommas(data.following_count || 0)}</b>
+									<span className="label">Following</span>
+								</li>
+							</ul>
+
+							<ul className="meta">
+								<li>
+									<b>{numberWithCommas(data.total_photos || 0)}</b>
+									<span className="label">Photos</span>
+								</li>
+
+								<li>
+									<b>{numberWithCommas(data.downloads || 0)}</b>
+									<span className="label">Downloads</span>
+								</li>
+
+								<li>
+									<b>{numberWithCommas(data.total_likes || 0)}</b>
+									<span className="label">Likes</span>
+								</li>
+							</ul>
 						</>
 					)}
 				</section>
@@ -364,6 +393,34 @@ const Layout = ({ children, user }: Props) => {
 					--button-opacity: 1;
 					--button-cursor: pointer;
 					--button-filter: grayscale(0%);
+				}
+
+				.meta {
+					display: flex;
+					align-items: center;
+					list-style: none;
+					margin: 1rem 0 0.75rem;
+					padding: 0;
+					flex-wrap: wrap;
+					gap: 1rem;
+				}
+
+				.meta li {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+				}
+
+				.meta .label {
+					display: block;
+					opacity: 0.5;
+					margin: 0.25em 0;
+					font-size: 0.75rem;
+				}
+
+				.hint {
+					font-size: 0.75rem;
+					opacity: 0.75;
 				}
 			`}</style>
 		</>
