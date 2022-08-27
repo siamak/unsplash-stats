@@ -16,7 +16,18 @@ function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const colors = ["#90f1ef", "#ffd6e0", "#ffef9f", "#c1fba4", "#7bf1a8"];
+const colors = [
+	"#efe35c",
+	"#f4ae7c",
+	"#fa8997",
+	"#e477d5",
+	"#b495ee",
+	"#7dacf2",
+	"#53c3f3",
+	"#28d8f3",
+	"#38e6c9",
+	"#4cf065",
+];
 
 const Photo = ({ item, i }: Props) => {
 	const featured = useMemo(() => {
@@ -48,23 +59,47 @@ const Photo = ({ item, i }: Props) => {
 					{i + 1}. {item.title || item.alt_desc || "UNTITLED"}
 				</a>
 			</h3>
-			{featured.length > 0 && (
+			{featured.filter((e) => e.status === "approved").length > 0 && (
 				<div className="featured">
 					<span className="span">Featured in</span>
-					{featured.map((feature) => (
-						<span
-							className={`${feature.status} span badge`}
-							style={{
-								background: colors[Math.floor(Math.random() * colors.length)],
-							}}
-							key={feature.topic}
-							title={feature.time}
-						>
-							{feature.status === "rejected" ? "× " : ""}
-							{feature.status === "unevaluated" ? "• " : ""}
-							{feature.topic}
-						</span>
-					))}
+					{featured
+						.filter((e) => e.status === "approved")
+						.map((feature) => (
+							<span
+								className={`${feature.status} span badge`}
+								style={{
+									background: colors[Math.floor(Math.random() * colors.length)],
+								}}
+								key={feature.topic}
+								title={feature.time}
+							>
+								{feature.status === "rejected" ? "× " : ""}
+								{feature.status === "unevaluated" ? "• " : ""}
+								{feature.topic}
+							</span>
+						))}
+				</div>
+			)}
+			{featured.filter(
+				(e) => e.status === "rejected" || e.status === "unevaluated"
+			).length > 0 && (
+				<div className="featured">
+					<span className="span">Waiting or Rejected</span>
+					{featured
+						.filter(
+							(e) => e.status === "rejected" || e.status === "unevaluated"
+						)
+						.map((feature) => (
+							<span
+								className={`${feature.status}`}
+								key={feature.topic}
+								title={feature.time}
+							>
+								{/* {feature.status === "rejected" ? "× " : ""} */}
+								{/* {feature.status === "unevaluated" ? "• " : ""} */}
+								{feature.topic}
+							</span>
+						))}
 				</div>
 			)}
 			<ul className="meta">
@@ -111,6 +146,15 @@ const Photo = ({ item, i }: Props) => {
 					color: #66e297;
 				}
 
+				@media (prefers-color-scheme: light) {
+					.gain-red {
+						color: #db143e;
+					}
+					.gain-green {
+						color: #15ab51;
+					}
+				}
+
 				.featured {
 					display: flex;
 					align-items: center;
@@ -137,13 +181,14 @@ const Photo = ({ item, i }: Props) => {
 				}
 
 				.featured .unevaluated {
-					opacity: 0.75;
-					background: #666 !important;
+					padding: 0.25rem 0.5rem;
+					opacity: 0.4;
 				}
 
 				.featured .rejected {
-					opacity: 0.75;
-					background: #ee3171 !important;
+					padding: 0.25rem 0.5rem;
+					text-decoration: line-through;
+					opacity: 0.6;
 				}
 
 				@media (prefers-color-scheme: dark) {

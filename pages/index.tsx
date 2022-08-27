@@ -121,6 +121,13 @@ export default function Unsplash({ user }: Props) {
 					margin-top: 0.5rem;
 				}
 
+				@media (prefers-color-scheme: light) {
+					.btn {
+						background: rgba(100, 100, 100, 0.1);
+						border-color: rgba(0, 0, 0, 0.1);
+					}
+				}
+
 				.form {
 					display: flex;
 					margin-top: 0.25rem;
