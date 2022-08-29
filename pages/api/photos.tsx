@@ -3,6 +3,17 @@ import axios from "axios";
 import { firstBy } from "thenby";
 import { Item } from "../../src/interface/app.interface";
 
+type TopicSubmissions = {
+	[key: string]: { status: string; approved_on: Date };
+};
+
+// {
+//   'street-photography': { status: 'rejected' },
+//   travel: { status: 'approved', approved_on: '2022-08-19T08:49:38Z' },
+//   wallpapers: { status: 'rejected' },
+//   architecture: { status: 'rejected' },
+//   history: { status: 'unevaluated' }
+// }
 const topGainers = async (user: string) => {
 	function getPhotos(page = 1, data: any = []): any {
 		return axios
@@ -25,12 +36,20 @@ const topGainers = async (user: string) => {
 				const percentages =
 					(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
 
+				const topicAsArray = Object.entries(
+					d.topic_submissions as TopicSubmissions
+				).map((e) => ({
+					topic: e[0],
+					...e[1],
+				}));
+
 				return {
 					id: d.id,
 					created_at: d.created_at,
 					title: d.description,
 					alt_desc: d.alt_description,
-					featured: d.topic_submissions,
+					// featured: d.topic_submissions,
+					topics: topicAsArray,
 					link: d.links.html,
 					image: {
 						regular: d.urls.regular,
@@ -84,12 +103,19 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 				const percentages =
 					(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
 
+				const topicAsArray = Object.entries(
+					d.topic_submissions as TopicSubmissions
+				).map((e) => ({
+					topic: e[0],
+					...e[1],
+				}));
 				return {
 					id: d.id,
 					created_at: d.created_at,
 					title: d.description,
 					alt_desc: d.alt_description,
-					featured: d.topic_submissions,
+					// featured: d.topic_submissions,
+					topics: topicAsArray,
 					link: d.links.html,
 					image: {
 						regular: d.urls.regular,

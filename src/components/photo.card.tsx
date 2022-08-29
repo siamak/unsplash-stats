@@ -30,19 +30,7 @@ const colors = [
 ];
 
 const Photo = ({ item, i }: Props) => {
-	const featured = useMemo(() => {
-		const topics = item.featured;
-		return (
-			Object.entries(topics)
-				// .filter((e) => e[1].status === "approved")
-				.map((p: any) => ({
-					topic: p[0].split("-").map(capitalize).join(" "),
-					time: new Date(p[1].approved_on).toString(),
-					status: p[1].status,
-				}))
-		);
-	}, [item]);
-
+	console.log(item.topics);
 	return (
 		<div key={item.id} className="photo">
 			<div className="image">
@@ -59,10 +47,10 @@ const Photo = ({ item, i }: Props) => {
 					{i + 1}. {item.title || item.alt_desc || "UNTITLED"}
 				</a>
 			</h3>
-			{featured.filter((e) => e.status === "approved").length > 0 && (
+			{item.topics.filter((e) => e.status === "approved").length > 0 && (
 				<div className="featured">
 					<span className="span">Featured in</span>
-					{featured
+					{item.topics
 						.filter((e) => e.status === "approved")
 						.map((feature) => (
 							<span
@@ -71,7 +59,10 @@ const Photo = ({ item, i }: Props) => {
 									background: colors[Math.floor(Math.random() * colors.length)],
 								}}
 								key={feature.topic}
-								title={feature.time}
+								title={
+									feature.approved_on &&
+									new Date(feature.approved_on).toString()
+								}
 							>
 								{feature.status === "rejected" ? "× " : ""}
 								{feature.status === "unevaluated" ? "• " : ""}
@@ -80,23 +71,17 @@ const Photo = ({ item, i }: Props) => {
 						))}
 				</div>
 			)}
-			{featured.filter(
+			{item.topics.filter(
 				(e) => e.status === "rejected" || e.status === "unevaluated"
 			).length > 0 && (
 				<div className="featured">
 					<span className="span">Waiting or Rejected</span>
-					{featured
+					{item.topics
 						.filter(
 							(e) => e.status === "rejected" || e.status === "unevaluated"
 						)
 						.map((feature) => (
-							<span
-								className={`${feature.status}`}
-								key={feature.topic}
-								title={feature.time}
-							>
-								{/* {feature.status === "rejected" ? "× " : ""} */}
-								{/* {feature.status === "unevaluated" ? "• " : ""} */}
+							<span className={`${feature.status}`} key={feature.topic}>
 								{feature.topic}
 							</span>
 						))}
