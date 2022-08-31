@@ -1,19 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
-import { firstBy } from "thenby";
 import { Item } from "../../src/interface/app.interface";
 
 type TopicSubmissions = {
 	[key: string]: { status: string; approved_on: Date };
 };
 
-// {
-//   'street-photography': { status: 'rejected' },
-//   travel: { status: 'approved', approved_on: '2022-08-19T08:49:38Z' },
-//   wallpapers: { status: 'rejected' },
-//   architecture: { status: 'rejected' },
-//   history: { status: 'unevaluated' }
-// }
 const topGainers = async (user: string) => {
 	function getPhotos(page = 1, data: any = []): any {
 		return axios
@@ -39,7 +31,7 @@ const topGainers = async (user: string) => {
 				const topicAsArray = Object.entries(
 					d.topic_submissions as TopicSubmissions
 				).map((e) => ({
-					topic: e[0],
+					topic: e[0].replace("-", " "),
 					...e[1],
 				}));
 
@@ -48,7 +40,6 @@ const topGainers = async (user: string) => {
 					created_at: d.created_at,
 					title: d.description,
 					alt_desc: d.alt_description,
-					// featured: d.topic_submissions,
 					topics: topicAsArray,
 					link: d.links.html,
 					image: {
@@ -63,15 +54,8 @@ const topGainers = async (user: string) => {
 					gains: Number((percentages * 100).toFixed(2)),
 				};
 			})
-			// .sort((a: any, b: any) => (a.gains > b.gains ? -1 : 1));
-			.sort(
-				firstBy((v1: any, v2: any) => {
-					return v2.gains - v1.gains;
-				})
-				// .thenBy((v1: any, v2: any) => {
-				// 	return v1.statistics.views.total - v2.statistics.views.total;
-				// })
-			);
+			.sort((a: any, b: any) => (a.gains > b.gains ? -1 : 1));
+
 		return lightweightData;
 	} catch (error) {
 		return {
@@ -106,15 +90,15 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 				const topicAsArray = Object.entries(
 					d.topic_submissions as TopicSubmissions
 				).map((e) => ({
-					topic: e[0],
+					topic: e[0].replace("-", " "),
 					...e[1],
 				}));
+
 				return {
 					id: d.id,
 					created_at: d.created_at,
 					title: d.description,
 					alt_desc: d.alt_description,
-					// featured: d.topic_submissions,
 					topics: topicAsArray,
 					link: d.links.html,
 					image: {

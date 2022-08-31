@@ -12,9 +12,9 @@ function numberWithCommas(str: number | string) {
 	return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function capitalize(str: string) {
-	return str.charAt(0).toUpperCase() + str.slice(1);
-}
+// function capitalize(str: string) {
+// 	return str.charAt(0).toUpperCase() + str.slice(1);
+// }
 
 const colors = [
 	"#efe35c",
@@ -30,7 +30,6 @@ const colors = [
 ];
 
 const Photo = ({ item, i }: Props) => {
-	console.log(item.topics);
 	return (
 		<div key={item.id} className="photo">
 			<div className="image">
@@ -163,6 +162,8 @@ const Photo = ({ item, i }: Props) => {
 					color: #19191c;
 
 					margin: 0 0.15rem;
+
+					text-transform: capitalize;
 				}
 
 				.featured .unevaluated {

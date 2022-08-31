@@ -32,6 +32,8 @@ export default function Popular({ user }: Props) {
 
 	const photos = data ? [].concat(...data) : [];
 
+	// const sortByApprovedOn = photos.sort((a: Item, b: Item) => a.topics)
+
 	return (
 		<Layout user={user}>
 			<div className="grid">
