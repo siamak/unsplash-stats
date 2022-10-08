@@ -33,7 +33,6 @@ const colors = [
 
 const Photo = ({ item, i }: Props) => {
 	const settingStore = useStore(SettingStore);
-	console.log(item.promoted_at);
 
 	return (
 		<div className="photo">
