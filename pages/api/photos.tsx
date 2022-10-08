@@ -6,11 +6,12 @@ type TopicSubmissions = {
 	[key: string]: { status: string; approved_on: Date };
 };
 
-const topGainers = async (user: string) => {
+const topGainers = async (user: string, sort: string) => {
 	function getPhotos(page = 1, data: any = []): any {
+		console.log(page);
 		return axios
 			.get(
-				`https://unsplash.com/napi/users/${user}/photos?per_page=50&order_by=views&page=${page}&stats=true&xp=unsplash-plus-2%3AControl`
+				`https://unsplash.com/napi/users/${user}/photos?per_page=50&order_by=${sort}&page=${page}&stats=true&xp=unsplash-plus-2%3AControl`
 			)
 			.then((response: any) => {
 				console.log({ page });
@@ -21,10 +22,20 @@ const topGainers = async (user: string) => {
 	}
 	try {
 		const data = await getPhotos(1, []);
+		console.log(data);
 		const lightweightData = data
 			.map((d: any) => {
 				const values = d.statistics.views.historical.values;
-				const twoItems = values.slice(-2);
+				// const currentWeek = values
+				// 	.slice(-7)
+				// 	.reduce((prev: number, curr: any) => prev + curr.value, 0);
+
+				// const lastWeek = values
+				// 	.splice(values.length - 14, 7)
+				// 	.reduce((prev: number, curr: any) => prev + curr.value, 0);
+
+				// const percentages = (currentWeek - lastWeek) / lastWeek;
+				const twoItems = values.slice(-7);
 				const percentages =
 					(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
 
@@ -65,11 +76,12 @@ const topGainers = async (user: string) => {
 };
 
 const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
-	const { username, p, per_page, type } = req.query;
+	const { username, p, per_page, type, order_by } = req.query;
 	const user = (username as string) || "onlysiamak";
-	const topic = type || "overall";
+	const topic = (type as string) || "overall";
+	const sort = (order_by as string) || "views";
 	if (topic === "top_gainers") {
-		const data = await topGainers(user);
+		const data = await topGainers(user, sort);
 		res.status(200).json(data as any);
 	} else {
 		const page = p || 1;
@@ -77,7 +89,7 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 
 		try {
 			const response = await axios.get(
-				`https://unsplash.com/napi/users/${user}/photos?per_page=${perPage}&order_by=views&page=${page}&stats=true&xp=unsplash-plus-2%3AControl`
+				`https://unsplash.com/napi/users/${user}/photos?per_page=${perPage}&order_by=${sort}&page=${page}&stats=true&xp=unsplash-plus-2%3AControl`
 			);
 
 			const data = response.data;

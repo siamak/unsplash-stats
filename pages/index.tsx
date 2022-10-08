@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import NProgress from "nprogress";
 import useSWRInfinite from "swr/infinite";
@@ -22,14 +22,14 @@ type Props = { user: string };
 
 export default function Unsplash({ user }: Props) {
 	const state = useStore(UserStore);
-
+	const [sortBy, setSort] = useState("views");
 	const [hasNextPage, setNextPage] = useState(true);
 
 	const { data, error, size, setSize, isValidating } = useSWRInfinite(
 		(index) =>
 			`/api/photos?username=${state.username}&p=${
 				index + 1
-			}&per_page=${PAGE_SIZE}`,
+			}&per_page=${PAGE_SIZE}&order_by=${sortBy}`,
 		fetcher
 	);
 
@@ -71,8 +71,38 @@ export default function Unsplash({ user }: Props) {
 		rootMargin: `0px 0px 400px 0px`,
 	});
 
+	const onChanged = useCallback((e: any) => {
+		setSort(e.target.value);
+	}, []);
+
 	return (
 		<Layout user={user}>
+			<div className="c-sc">
+				<ul>
+					<li className={sortBy === "views" ? "active" : ""}>
+						<input
+							onChange={onChanged}
+							id="views"
+							value="views"
+							type="radio"
+							name="sort"
+							// checked={sortBy === "views"}
+						/>
+						<label htmlFor="views">Views</label>
+					</li>
+					<li className={sortBy === "downloads" ? "active" : ""}>
+						<input
+							onChange={onChanged}
+							id="downloads"
+							value="downloads"
+							type="radio"
+							name="sort"
+							// checked={sortBy === "downloads"}
+						/>
+						<label htmlFor="downloads">Downloads</label>
+					</li>
+				</ul>
+			</div>
 			<div className="grid">
 				{photos.map((photo: Item, i) => (
 					<Photo i={i} item={photo} key={photo.id} />

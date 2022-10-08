@@ -207,7 +207,7 @@ const Layout = ({ children, user }: Props) => {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-					margin: 4rem 0;
+					margin: 2rem 0;
 				}
 				.header-name {
 					font-size: 2rem;

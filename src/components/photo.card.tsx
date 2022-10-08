@@ -105,7 +105,7 @@ const Photo = ({ item, i }: Props) => {
 							{numberWithCommas(item.gains || 0)}%
 						</span>
 					</b>
-					<span className="label">Gains</span>
+					<span className="label">Changes</span>
 				</li>
 			</ul>
 			<Charts item={item} />
