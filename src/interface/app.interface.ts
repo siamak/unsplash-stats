@@ -52,6 +52,7 @@ export interface Topcis {
 export interface Item {
 	id: string;
 	created_at: Date;
+	promoted_at: Date;
 	title?: any;
 	alt_desc: string;
 	// featured: Featured;

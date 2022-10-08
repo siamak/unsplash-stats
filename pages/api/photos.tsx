@@ -49,6 +49,8 @@ const topGainers = async (user: string, sort: string) => {
 				return {
 					id: d.id,
 					created_at: d.created_at,
+					promoted_at: d.promoted_at,
+
 					title: d.description,
 					alt_desc: d.alt_description,
 					topics: topicAsArray,
@@ -109,6 +111,7 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 				return {
 					id: d.id,
 					created_at: d.created_at,
+					promoted_at: d.promoted_at,
 					title: d.description,
 					alt_desc: d.alt_description,
 					topics: topicAsArray,

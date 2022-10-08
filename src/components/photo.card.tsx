@@ -33,6 +33,7 @@ const colors = [
 
 const Photo = ({ item, i }: Props) => {
 	const settingStore = useStore(SettingStore);
+	console.log(item.promoted_at);
 
 	return (
 		<div className="photo">
@@ -51,30 +52,48 @@ const Photo = ({ item, i }: Props) => {
 				</a>
 			</h3>
 
-			{item.topics.filter((e) => e.status === "approved").length > 0 && (
-				<div className="featured">
-					<span className="span">Featured in</span>
-					{item.topics
-						.filter((e) => e.status === "approved")
-						.map((feature) => (
+			{item.topics.filter((e) => e.status === "approved").length > 0 ||
+				(item.promoted_at && (
+					<div className="featured">
+						<span className="span">Featured in</span>
+						{item.promoted_at && (
 							<span
-								className={`${feature.status} span badge`}
+								className={`span badge`}
 								style={{
-									background: colors[Math.floor(Math.random() * colors.length)],
+									backgroundColor: "#833ab4",
+									padding: "0.25rem 0.75rem",
+									color: "#fff",
+
+									background:
+										"linear-gradient(to right, #833ab4, #D32A2A, #fcb045)",
 								}}
-								key={feature.topic}
-								title={
-									feature.approved_on &&
-									new Date(feature.approved_on).toString()
-								}
+								title={new Date(item.promoted_at).toString()}
 							>
-								{feature.status === "rejected" ? "× " : ""}
-								{feature.status === "unevaluated" ? "• " : ""}
-								{feature.topic}
+								Editorial
 							</span>
-						))}
-				</div>
-			)}
+						)}
+						{item.topics
+							.filter((e) => e.status === "approved")
+							.map((feature) => (
+								<span
+									className={`${feature.status} span badge`}
+									style={{
+										background:
+											colors[Math.floor(Math.random() * colors.length)],
+									}}
+									key={feature.topic}
+									title={
+										feature.approved_on &&
+										new Date(feature.approved_on).toString()
+									}
+								>
+									{feature.status === "rejected" ? "× " : ""}
+									{feature.status === "unevaluated" ? "• " : ""}
+									{feature.topic}
+								</span>
+							))}
+					</div>
+				))}
 			<p className="hint">
 				Created At: <b>{new Date(item.created_at).toDateString()}</b>
 			</p>
