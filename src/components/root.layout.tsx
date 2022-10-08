@@ -3,8 +3,9 @@ import Head from "next/head";
 import useSWR from "swr";
 import Image from "next/image";
 import { useStore } from "laco-react";
-import UserStore, { setUser } from "../store/store";
+import UserStore, { toggleShowTopics, setUser } from "../store/store";
 import Link from "next/link";
+import { useDoubleTap } from "../hooks/useDoubleClick";
 
 type Props = {
 	children: React.ReactNode;
@@ -19,6 +20,10 @@ function numberWithCommas(str: number | string) {
 const Layout = ({ children, user }: Props) => {
 	const state = useStore(UserStore);
 	const [val, setVal] = useState(state.username);
+
+	const bind = useDoubleTap(() => {
+		toggleShowTopics();
+	});
 
 	useEffect(() => {
 		setUser(val);
@@ -106,6 +111,7 @@ const Layout = ({ children, user }: Props) => {
 									height={64}
 									src={data.profile_image}
 									objectFit="cover"
+									{...bind}
 								/>
 							</div>
 

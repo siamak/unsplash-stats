@@ -22,6 +22,7 @@ type Props = { user: string };
 
 export default function Unsplash({ user }: Props) {
 	const state = useStore(UserStore);
+
 	const [sortBy, setSort] = useState("views");
 	const [hasNextPage, setNextPage] = useState(true);
 
@@ -79,6 +80,16 @@ export default function Unsplash({ user }: Props) {
 		<Layout user={user}>
 			<div className="c-sc">
 				<ul>
+					<li className={sortBy === "latest" ? "active" : ""}>
+						<input
+							onChange={onChanged}
+							id="latest"
+							value="latest"
+							type="radio"
+							name="sort"
+						/>
+						<label htmlFor="latest">Latest</label>
+					</li>
 					<li className={sortBy === "views" ? "active" : ""}>
 						<input
 							onChange={onChanged}

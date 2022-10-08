@@ -1,7 +1,9 @@
-import React, { memo, useMemo } from "react";
+import React, { memo } from "react";
 import { LineChart, Line, Tooltip, ResponsiveContainer } from "recharts";
 import Image from "next/image";
 import { Item } from "../interface/app.interface";
+import { useStore } from "laco-react";
+import { SettingStore } from "../store/store";
 
 type Props = {
 	item: Item;
@@ -30,8 +32,10 @@ const colors = [
 ];
 
 const Photo = ({ item, i }: Props) => {
+	const settingStore = useStore(SettingStore);
+
 	return (
-		<div key={item.id} className="photo">
+		<div className="photo">
 			<div className="image">
 				<Image
 					src={item.image.regular}
@@ -46,6 +50,7 @@ const Photo = ({ item, i }: Props) => {
 					{i + 1}. {item.title || item.alt_desc || "UNTITLED"}
 				</a>
 			</h3>
+
 			{item.topics.filter((e) => e.status === "approved").length > 0 && (
 				<div className="featured">
 					<span className="span">Featured in</span>
@@ -70,22 +75,9 @@ const Photo = ({ item, i }: Props) => {
 						))}
 				</div>
 			)}
-			{item.topics.filter(
-				(e) => e.status === "rejected" || e.status === "unevaluated"
-			).length > 0 && (
-				<div className="featured">
-					<span className="span">Waiting or Rejected</span>
-					{item.topics
-						.filter(
-							(e) => e.status === "rejected" || e.status === "unevaluated"
-						)
-						.map((feature) => (
-							<span className={`${feature.status}`} key={feature.topic}>
-								{feature.topic}
-							</span>
-						))}
-				</div>
-			)}
+			<p className="hint">
+				Created At: <b>{new Date(item.created_at).toDateString()}</b>
+			</p>
 			<ul className="meta">
 				<li>
 					<b>{numberWithCommas(item.statistics.views.total || 0)}</b>
@@ -105,13 +97,31 @@ const Photo = ({ item, i }: Props) => {
 							{numberWithCommas(item.gains || 0)}%
 						</span>
 					</b>
-					<span className="label">Changes</span>
+					<span className="label">%1d</span>
 				</li>
 			</ul>
+
 			<Charts item={item} />
-			<p className="hint">
-				Created At: <b>{new Date(item.created_at).toDateString()}</b>
-			</p>
+			{settingStore.showTopics && (
+				<>
+					{item.topics.filter(
+						(e) => e.status === "rejected" || e.status === "unevaluated"
+					).length > 0 && (
+						<div className="featured">
+							<span className="span">Waiting or Rejected</span>
+							{item.topics
+								.filter(
+									(e) => e.status === "rejected" || e.status === "unevaluated"
+								)
+								.map((feature) => (
+									<span className={`${feature.status}`} key={feature.topic}>
+										{feature.topic}
+									</span>
+								))}
+						</div>
+					)}
+				</>
+			)}
 			<style jsx>{`
 				.heading {
 					font-size: 1rem;
