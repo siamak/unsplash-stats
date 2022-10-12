@@ -41,7 +41,9 @@ export default function Unsplash({ user }: Props) {
 		(size > 0 && data && typeof data[size - 1] === "undefined");
 	const isEmpty = data?.[0]?.length === 0;
 	const isReachingEnd =
-		isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
+		isEmpty ||
+		data?.[0].errors ||
+		(data && data[data.length - 1]?.length < PAGE_SIZE);
 	// const isRefreshing = isValidating && data && data.length === size;
 
 	useEffect(() => {
@@ -114,11 +116,16 @@ export default function Unsplash({ user }: Props) {
 					</li>
 				</ul>
 			</div>
-			<div className="grid">
-				{photos.map((photo: Item, i) => (
-					<Photo i={i} item={photo} key={photo.id} />
-				))}
-			</div>
+
+			{(data?.[0].errors && (
+				<pre>{JSON.stringify(data[0].errors, null, 4)}</pre>
+			)) || (
+				<div className="grid">
+					{photos.map((photo: Item, i) => (
+						<Photo i={i} item={photo} key={photo.id} />
+					))}
+				</div>
+			)}
 
 			<div className="pagination" ref={ref}>
 				<p>

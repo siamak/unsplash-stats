@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Head from "next/head";
 import useSWR from "swr";
 import Image from "next/image";
@@ -13,6 +13,13 @@ type Props = {
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const debounce = (fn: Function, ms = 300) => {
+	let timeoutId: ReturnType<typeof setTimeout>;
+	return function (this: any, ...args: any[]) {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => fn.apply(this, args), ms);
+	};
+};
 function numberWithCommas(str: number | string) {
 	return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -24,6 +31,14 @@ const Layout = ({ children, user }: Props) => {
 	const bind = useDoubleTap(() => {
 		toggleShowTopics();
 	});
+
+	const changeHandler = (event: any) => {
+		setVal(event.target.value);
+	};
+	const debouncedChangeHandler = useMemo(
+		() => debounce(changeHandler, 500),
+		[]
+	);
 
 	useEffect(() => {
 		setUser(val);
@@ -54,8 +69,10 @@ const Layout = ({ children, user }: Props) => {
 					<div className="center">
 						<div className={!!val ? "form valid" : "form"}>
 							<input
-								value={state.username}
-								onChange={(e) => setVal(e.target.value)}
+								// onChange={(e) => setVal(e.target.value)}
+								// value={state.username}
+								defaultValue={state.username}
+								onKeyDown={debouncedChangeHandler}
 								placeholder="Enter your username ..."
 							/>
 							<div>
@@ -107,7 +124,9 @@ const Layout = ({ children, user }: Props) => {
 					{error && <div>failed to load</div>}
 					{!data && <div>Loading...</div>}
 
-					{data && (
+					{data?.errors && <pre>{JSON.stringify(data.errors, null, 4)}</pre>}
+
+					{data && !data.errors && (
 						<>
 							<div className="avatar">
 								<Image

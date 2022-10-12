@@ -36,11 +36,15 @@ export default function Popular({ user }: Props) {
 
 	return (
 		<Layout user={user}>
-			<div className="grid">
-				{photos.map((photo: Item, i) => (
-					<Photo i={i} item={photo} key={photo.id} />
-				))}
-			</div>
+			{(data?.[0].errors && (
+				<pre>{JSON.stringify(data[0].errors, null, 4)}</pre>
+			)) || (
+				<div className="grid">
+					{photos.map((photo: Item, i) => (
+						<Photo i={i} item={photo} key={photo.id} />
+					))}
+				</div>
+			)}
 
 			<style jsx>{`
 				.btn {

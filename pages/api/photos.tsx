@@ -17,6 +17,7 @@ const topGainers = async (user: string, sort: string) => {
 				console.log({ page });
 				if (response.data.length < 1) return data;
 				data.push(...response.data);
+
 				return getPhotos(page + 1, data);
 			});
 	}
@@ -126,7 +127,22 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 
 			res.status(200).json(lightweightData);
 		} catch (error: any) {
-			res.status(500).json(error);
+			if (error.response) {
+				// The request was made and the server responded with a status code
+				// that falls out of the range of 2xx
+				res.status(error.response.status).json(error.response.data);
+			} else if (error.request) {
+				// The request was made but no response was received
+				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+				// http.ClientRequest in node.js
+				console.log(error.request);
+				res.status(500).json(error.request);
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				console.log("Error", error.message);
+				res.status(500).json(error.message);
+			}
+			console.log(error.config);
 		}
 	}
 };
