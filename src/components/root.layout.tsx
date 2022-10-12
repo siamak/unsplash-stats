@@ -37,7 +37,10 @@ const Layout = ({ children, user }: Props) => {
 	return (
 		<>
 			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta
+					name="viewport"
+					content="width=device-width, initial-scale=1, user-scalable=0"
+				/>
 				<title>@{user} – Unsplash statistics</title>
 			</Head>
 
@@ -55,13 +58,15 @@ const Layout = ({ children, user }: Props) => {
 								onChange={(e) => setVal(e.target.value)}
 								placeholder="Enter your username ..."
 							/>
-							<button
-								onClick={() => {
-									setUser(val);
-								}}
-							>
-								<span className="default">Show photos</span>
-							</button>
+							<div>
+								<button
+									onClick={() => {
+										setUser(val);
+									}}
+								>
+									<span className="default">Search</span>
+								</button>
+							</div>
 						</div>
 					</div>
 

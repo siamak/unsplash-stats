@@ -22,20 +22,11 @@ const topGainers = async (user: string, sort: string) => {
 	}
 	try {
 		const data = await getPhotos(1, []);
-		console.log(data);
+
 		const lightweightData = data
 			.map((d: any) => {
 				const values = d.statistics.views.historical.values;
-				// const currentWeek = values
-				// 	.slice(-7)
-				// 	.reduce((prev: number, curr: any) => prev + curr.value, 0);
-
-				// const lastWeek = values
-				// 	.splice(values.length - 14, 7)
-				// 	.reduce((prev: number, curr: any) => prev + curr.value, 0);
-
-				// const percentages = (currentWeek - lastWeek) / lastWeek;
-				const twoItems = values.slice(-7);
+				const twoItems = values.slice(-2);
 				const percentages =
 					(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
 
@@ -56,6 +47,8 @@ const topGainers = async (user: string, sort: string) => {
 					topics: topicAsArray,
 					link: d.links.html,
 					image: {
+						width: d.width,
+						height: d.height,
 						regular: d.urls.regular,
 					},
 
@@ -117,6 +110,8 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 					topics: topicAsArray,
 					link: d.links.html,
 					image: {
+						width: d.width,
+						height: d.height,
 						regular: d.urls.regular,
 					},
 

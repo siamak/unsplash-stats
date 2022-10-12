@@ -190,7 +190,6 @@ body {
 	text-align: center;
 	transition: opacity ease 0.2s;
 	position: relative;
-	min-width: 145px;
 }
 .c-sc ul label:hover {
 	opacity: 0.6;

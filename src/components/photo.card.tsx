@@ -18,21 +18,24 @@ function numberWithCommas(str: number | string) {
 // 	return str.charAt(0).toUpperCase() + str.slice(1);
 // }
 
-const colors = [
-	"#efe35c",
-	"#f4ae7c",
-	"#fa8997",
-	"#e477d5",
-	"#b495ee",
-	"#7dacf2",
-	"#53c3f3",
-	"#28d8f3",
-	"#38e6c9",
-	"#4cf065",
-];
-
 const Photo = ({ item, i }: Props) => {
 	const settingStore = useStore(SettingStore);
+	const colors = [
+		"#efe35c",
+		"#f4ae7c",
+		"#fa8997",
+		"#e477d5",
+		"#b495ee",
+		"#7dacf2",
+		"#53c3f3",
+		"#28d8f3",
+		"#38e6c9",
+		"#4cf065",
+	];
+
+	const hasTopics = item.promoted_at
+		? true
+		: item.topics.filter((e) => e.status === "approved").length > 0;
 
 	return (
 		<div className="photo">
@@ -51,48 +54,66 @@ const Photo = ({ item, i }: Props) => {
 				</a>
 			</h3>
 
-			{item.topics.filter((e) => e.status === "approved").length > 0 ||
-				(item.promoted_at && (
-					<div className="featured">
-						<span className="span">Featured in</span>
-						{item.promoted_at && (
-							<span
-								className={`span badge`}
-								style={{
-									backgroundColor: "#833ab4",
-									padding: "0.25rem 0.75rem",
-									color: "#fff",
+			{hasTopics && (
+				<div className="featured">
+					<span className="span">Featured in</span>
+					{item.promoted_at && (
+						<span
+							className={`span badge`}
+							style={{
+								backgroundColor: "#833ab4",
+								padding: "0.25rem 0.75rem",
+								color: "#fff",
 
-									background:
-										"linear-gradient(to right, #833ab4, #D32A2A, #fcb045)",
+								background:
+									"linear-gradient(to right, #833ab4, #D32A2A, #fcb045)",
+							}}
+							title={new Date(item.promoted_at).toString()}
+						>
+							Editorial
+						</span>
+					)}
+					{item.topics
+						.filter((e) => e.status === "approved")
+						.map((feature) => (
+							<span
+								className={`${feature.status} span badge`}
+								style={{
+									background: colors[Math.floor(Math.random() * colors.length)],
 								}}
-								title={new Date(item.promoted_at).toString()}
+								key={feature.topic}
+								title={
+									feature.approved_on &&
+									new Date(feature.approved_on).toString()
+								}
 							>
-								Editorial
+								{feature.status === "rejected" ? "× " : ""}
+								{feature.status === "unevaluated" ? "• " : ""}
+								{feature.topic}
 							</span>
-						)}
-						{item.topics
-							.filter((e) => e.status === "approved")
-							.map((feature) => (
-								<span
-									className={`${feature.status} span badge`}
-									style={{
-										background:
-											colors[Math.floor(Math.random() * colors.length)],
-									}}
-									key={feature.topic}
-									title={
-										feature.approved_on &&
-										new Date(feature.approved_on).toString()
-									}
-								>
-									{feature.status === "rejected" ? "× " : ""}
-									{feature.status === "unevaluated" ? "• " : ""}
-									{feature.topic}
-								</span>
-							))}
-					</div>
-				))}
+						))}
+				</div>
+			)}
+			{settingStore.showTopics && (
+				<>
+					{item.topics.filter(
+						(e) => e.status === "rejected" || e.status === "unevaluated"
+					).length > 0 && (
+						<div className="featured">
+							<span className="span">Waiting or Rejected</span>
+							{item.topics
+								.filter(
+									(e) => e.status === "rejected" || e.status === "unevaluated"
+								)
+								.map((feature) => (
+									<span className={`${feature.status}`} key={feature.topic}>
+										{feature.topic}
+									</span>
+								))}
+						</div>
+					)}
+				</>
+			)}
 			<p className="hint">
 				Created At: <b>{new Date(item.created_at).toDateString()}</b>
 			</p>
@@ -120,26 +141,7 @@ const Photo = ({ item, i }: Props) => {
 			</ul>
 
 			<Charts item={item} />
-			{settingStore.showTopics && (
-				<>
-					{item.topics.filter(
-						(e) => e.status === "rejected" || e.status === "unevaluated"
-					).length > 0 && (
-						<div className="featured">
-							<span className="span">Waiting or Rejected</span>
-							{item.topics
-								.filter(
-									(e) => e.status === "rejected" || e.status === "unevaluated"
-								)
-								.map((feature) => (
-									<span className={`${feature.status}`} key={feature.topic}>
-										{feature.topic}
-									</span>
-								))}
-						</div>
-					)}
-				</>
-			)}
+
 			<style jsx>{`
 				.heading {
 					font-size: 1rem;
@@ -240,7 +242,7 @@ const Photo = ({ item, i }: Props) => {
 				}
 
 				.image {
-					height: 400px;
+					min-height: 450px;
 					width: 100%;
 					position: relative;
 					margin: 0 auto 0.5rem;
