@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import NProgress from "nprogress";
 import useSWRInfinite from "swr/infinite";
@@ -6,7 +6,7 @@ import { Item } from "../src/interface/app.interface";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore, { setUser } from "../src/store/store";
+import UserStore, { SettingStore, setUser } from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -17,15 +17,18 @@ const Layout = dynamic(() => import("../src/components/root.layout"), {
 const Photo = dynamic(() => import("../src/components/photo.card"), {
 	ssr: false,
 });
+const Tabs = dynamic(() => import("../src/components/tabs"), {
+	ssr: false,
+});
 
 type Props = { user: string };
 
 export default function Unsplash({ user }: Props) {
 	const state = useStore(UserStore);
+	const setting = useStore(SettingStore);
+	const { sortBy } = setting;
 
-	const [sortBy, setSort] = useState("views");
 	const [hasNextPage, setNextPage] = useState(true);
-
 	const { data, error, size, setSize, isValidating } = useSWRInfinite(
 		(index) =>
 			`/api/photos?username=${state.username}&p=${
@@ -74,48 +77,9 @@ export default function Unsplash({ user }: Props) {
 		rootMargin: `0px 0px 400px 0px`,
 	});
 
-	const onChanged = useCallback((e: any) => {
-		setSort(e.target.value);
-	}, []);
-
 	return (
 		<Layout user={user}>
-			<div className="c-sc">
-				<ul>
-					<li className={sortBy === "latest" ? "active" : ""}>
-						<input
-							onChange={onChanged}
-							id="latest"
-							value="latest"
-							type="radio"
-							name="sort"
-						/>
-						<label htmlFor="latest">Latest</label>
-					</li>
-					<li className={sortBy === "views" ? "active" : ""}>
-						<input
-							onChange={onChanged}
-							id="views"
-							value="views"
-							type="radio"
-							name="sort"
-							// checked={sortBy === "views"}
-						/>
-						<label htmlFor="views">Views</label>
-					</li>
-					<li className={sortBy === "downloads" ? "active" : ""}>
-						<input
-							onChange={onChanged}
-							id="downloads"
-							value="downloads"
-							type="radio"
-							name="sort"
-							// checked={sortBy === "downloads"}
-						/>
-						<label htmlFor="downloads">Downloads</label>
-					</li>
-				</ul>
-			</div>
+			<Tabs />
 
 			{(data?.[0].errors && (
 				<pre>{JSON.stringify(data[0].errors, null, 4)}</pre>

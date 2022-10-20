@@ -7,8 +7,9 @@ const UserStore = new Store({ username: "onlysiamak" });
 
 type SettingState = {
 	showTopics: boolean;
+	sortBy: string;
 };
-const SettingStore = new Store({ showTopics: false });
+const SettingStore = new Store({ showTopics: false, sortBy: "views" });
 
 const setUser = (user: string) =>
 	UserStore.set((state: UserState) => ({ username: user }));
@@ -22,6 +23,12 @@ const toggleShowTopics = () =>
 		showTopics: !state.showTopics,
 	}));
 
+const setSortBy = (sortBy: string) =>
+	SettingStore.set((state: SettingState) => ({
+		...state,
+		sortBy,
+	}));
+
 export default UserStore;
 
-export { setUser, toggleShowTopics, SettingStore };
+export { setUser, toggleShowTopics, setSortBy, SettingStore };

@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore, { setUser } from "../src/store/store";
+import UserStore, { SettingStore, setUser } from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -15,18 +15,23 @@ const Layout = dynamic(() => import("../src/components/root.layout"), {
 const Photo = dynamic(() => import("../src/components/photo.card"), {
 	ssr: false,
 });
+const Tabs = dynamic(() => import("../src/components/tabs"), {
+	ssr: false,
+});
 
 type Props = { user: string };
 
 export default function Popular({ user }: Props) {
 	const state = useStore(UserStore);
+	const setting = useStore(SettingStore);
+	const { sortBy } = setting;
 
 	useEffect(() => {
 		setUser(user);
 	}, [user]);
 
 	const { data } = useSWR(
-		`/api/photos?username=${state.username}&p=1&per_page=${PAGE_SIZE}&type=top_gainers`,
+		`/api/photos?username=${state.username}&p=1&per_page=${PAGE_SIZE}&type=top_gainers&order_by=${sortBy}`,
 		fetcher
 	);
 
@@ -36,6 +41,8 @@ export default function Popular({ user }: Props) {
 
 	return (
 		<Layout user={user}>
+			<Tabs />
+
 			{(data?.[0].errors && (
 				<pre>{JSON.stringify(data[0].errors, null, 4)}</pre>
 			)) || (

@@ -23,10 +23,11 @@ const topGainers = async (user: string, sort: string) => {
 	}
 	try {
 		const data = await getPhotos(1, []);
+		const table = sort === "downloads" ? "downloads" : "views";
 
 		const lightweightData = data
 			.map((d: any) => {
-				const values = d.statistics.views.historical.values;
+				const values = d.statistics[table].historical.values;
 				const twoItems = values.slice(-2);
 				const percentages =
 					(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
