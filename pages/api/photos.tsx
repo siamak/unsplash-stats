@@ -23,48 +23,90 @@ const topGainers = async (user: string, sort: string) => {
 	}
 	try {
 		const data = await getPhotos(1, []);
-		const table = sort === "downloads" ? "downloads" : "views";
+		const isDownloads = sort === "downloads";
 
-		const lightweightData = data
-			.map((d: any) => {
-				const values = d.statistics[table].historical.values;
-				const twoItems = values.slice(-2);
-				const percentages =
-					(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
+		if (isDownloads) {
+			const lightweightData = data
+				.map((d: any) => {
+					const values = d.statistics.downloads.historical.values;
+					const twoItems = values.slice(-2);
+					const percentages = twoItems[1].value - twoItems[0].value;
 
-				const topicAsArray = Object.entries(
-					d.topic_submissions as TopicSubmissions
-				).map((e) => ({
-					topic: e[0].replace("-", " "),
-					...e[1],
-				}));
+					const topicAsArray = Object.entries(
+						d.topic_submissions as TopicSubmissions
+					).map((e) => ({
+						topic: e[0].replace("-", " "),
+						...e[1],
+					}));
 
-				return {
-					id: d.id,
-					created_at: d.created_at,
-					promoted_at: d.promoted_at,
+					return {
+						id: d.id,
+						created_at: d.created_at,
+						promoted_at: d.promoted_at,
 
-					title: d.description,
-					alt_desc: d.alt_description,
-					topics: topicAsArray,
-					link: d.links.html,
-					image: {
-						width: d.width,
-						height: d.height,
-						regular: d.urls.regular,
-					},
+						title: d.description,
+						alt_desc: d.alt_description,
+						topics: topicAsArray,
+						link: d.links.html,
+						image: {
+							width: d.width,
+							height: d.height,
+							regular: d.urls.regular,
+						},
 
-					likes: d.likes,
-					statistics: {
-						views: d.statistics.views,
-						downloads: d.statistics.downloads,
-					},
-					gains: Number((percentages * 100).toFixed(2)),
-				};
-			})
-			.sort((a: any, b: any) => (a.gains > b.gains ? -1 : 1));
+						likes: d.likes,
+						statistics: {
+							views: d.statistics.views,
+							downloads: d.statistics.downloads,
+						},
+						gains: Number(percentages),
+					};
+				})
+				.sort((a: any, b: any) => (a.gains > b.gains ? -1 : 1));
 
-		return lightweightData;
+			return lightweightData;
+		} else {
+			const lightweightData = data
+				.map((d: any) => {
+					const values = d.statistics.views.historical.values;
+					const twoItems = values.slice(-2);
+					const percentages =
+						(twoItems[1].value - twoItems[0].value) / twoItems[0].value;
+
+					const topicAsArray = Object.entries(
+						d.topic_submissions as TopicSubmissions
+					).map((e) => ({
+						topic: e[0].replace("-", " "),
+						...e[1],
+					}));
+
+					return {
+						id: d.id,
+						created_at: d.created_at,
+						promoted_at: d.promoted_at,
+
+						title: d.description,
+						alt_desc: d.alt_description,
+						topics: topicAsArray,
+						link: d.links.html,
+						image: {
+							width: d.width,
+							height: d.height,
+							regular: d.urls.regular,
+						},
+
+						likes: d.likes,
+						statistics: {
+							views: d.statistics.views,
+							downloads: d.statistics.downloads,
+						},
+						gains: Number((percentages * 100).toFixed(2)),
+					};
+				})
+				.sort((a: any, b: any) => (a.gains > b.gains ? -1 : 1));
+
+			return lightweightData;
+		}
 	} catch (error) {
 		return {
 			items: [],
