@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore, { SettingStore, setUser } from "../src/store/store";
+import UserStore, { SettingStore } from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -19,16 +19,12 @@ const Tabs = dynamic(() => import("../src/components/tabs"), {
 	ssr: false,
 });
 
-type Props = { user: string };
+type Props = { profile: string };
 
-export default function Popular({ user }: Props) {
+export default function Popular({ profile }: Props) {
 	const state = useStore(UserStore);
 	const setting = useStore(SettingStore);
 	const { sortBy } = setting;
-
-	useEffect(() => {
-		setUser(user);
-	}, [user]);
 
 	const { data } = useSWR(
 		`/api/photos?username=${state.username}&p=1&per_page=${PAGE_SIZE}&type=top_gainers&order_by=${sortBy}`,
@@ -40,7 +36,7 @@ export default function Popular({ user }: Props) {
 	// const sortByApprovedOn = photos.sort((a: Item, b: Item) => a.topics)
 
 	return (
-		<Layout user={user}>
+		<Layout profile={profile}>
 			<Tabs />
 
 			{(data?.[0].errors && (
@@ -121,11 +117,11 @@ export default function Popular({ user }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-	const { username } = query;
-	const user = username || "onlysiamak";
+	const { profile } = query;
+	const user = profile || "onlysiamak";
 	return {
 		props: {
-			user,
+			profile: user,
 		},
 	};
 };

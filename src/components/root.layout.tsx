@@ -6,10 +6,11 @@ import { useStore } from "laco-react";
 import UserStore, { toggleShowTopics, setUser } from "../store/store";
 import Link from "next/link";
 import { useDoubleTap } from "../hooks/useDoubleClick";
+import { useRouter } from "next/router";
 
 type Props = {
 	children: React.ReactNode;
-	user: string;
+	profile: string;
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -24,9 +25,10 @@ function numberWithCommas(str: number | string) {
 	return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const Layout = ({ children, user }: Props) => {
+const Layout = ({ children, profile }: Props) => {
 	const state = useStore(UserStore);
-	const [val, setVal] = useState(state.username);
+	const router = useRouter();
+	const [val, setVal] = useState(profile);
 
 	const bind = useDoubleTap(() => {
 		toggleShowTopics();
@@ -34,7 +36,15 @@ const Layout = ({ children, user }: Props) => {
 
 	const changeHandler = (event: any) => {
 		setVal(event.target.value);
+		router.push(
+			{
+				query: { profile: event.target.value },
+			},
+			undefined,
+			{ shallow: true }
+		);
 	};
+
 	const debouncedChangeHandler = useMemo(
 		() => debounce(changeHandler, 500),
 		[]
@@ -56,7 +66,7 @@ const Layout = ({ children, user }: Props) => {
 					name="viewport"
 					content="width=device-width, initial-scale=1, user-scalable=0"
 				/>
-				<title>@{user} – Unsplash statistics</title>
+				<title>@{profile} – Unsplash statistics</title>
 			</Head>
 
 			<section className="wrapper">
@@ -69,18 +79,12 @@ const Layout = ({ children, user }: Props) => {
 					<div className="center">
 						<div className={!!val ? "form valid" : "form"}>
 							<input
-								// onChange={(e) => setVal(e.target.value)}
-								// value={state.username}
 								defaultValue={state.username}
 								onKeyDown={debouncedChangeHandler}
 								placeholder="Enter your username ..."
 							/>
 							<div>
-								<button
-									onClick={() => {
-										setUser(val);
-									}}
-								>
+								<button type="submit">
 									<span className="default">Search</span>
 								</button>
 							</div>
@@ -90,7 +94,7 @@ const Layout = ({ children, user }: Props) => {
 					<div className="menu">
 						<Link
 							className="menu-link"
-							href={{ pathname: "/", query: { username: state.username } }}
+							href={{ pathname: "/", query: { profile: state.username } }}
 						>
 							<a>
 								<span>Overall</span>
@@ -101,7 +105,7 @@ const Layout = ({ children, user }: Props) => {
 							className="menu-link"
 							href={{
 								pathname: "/popular",
-								query: { username: state.username },
+								query: { profile: state.username },
 							}}
 						>
 							<a>

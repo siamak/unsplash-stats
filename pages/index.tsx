@@ -6,7 +6,7 @@ import { Item } from "../src/interface/app.interface";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore, { SettingStore, setUser } from "../src/store/store";
+import UserStore, { SettingStore } from "../src/store/store";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const PAGE_SIZE = 12;
@@ -21,9 +21,9 @@ const Tabs = dynamic(() => import("../src/components/tabs"), {
 	ssr: false,
 });
 
-type Props = { user: string };
+type Props = { profile: string };
 
-export default function Unsplash({ user }: Props) {
+export default function Unsplash({ profile }: Props) {
 	const state = useStore(UserStore);
 	const setting = useStore(SettingStore);
 	const { sortBy } = setting;
@@ -65,10 +65,6 @@ export default function Unsplash({ user }: Props) {
 		setSize((prev) => prev + 1);
 	};
 
-	useEffect(() => {
-		setUser(user);
-	}, [user]);
-
 	const [ref] = useInfiniteScroll({
 		loading: isValidating,
 		disabled: !!error,
@@ -78,7 +74,7 @@ export default function Unsplash({ user }: Props) {
 	});
 
 	return (
-		<Layout user={user}>
+		<Layout profile={profile}>
 			<Tabs />
 
 			{(data?.[0].errors && (
@@ -191,11 +187,11 @@ export default function Unsplash({ user }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-	const { username } = query;
-	const user = username || "onlysiamak";
+	const { profile } = query;
+	const user = profile || "onlysiamak";
 	return {
 		props: {
-			user,
+			profile: user,
 		},
 	};
 };

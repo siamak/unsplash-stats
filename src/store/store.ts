@@ -14,9 +14,6 @@ const SettingStore = new Store({ showTopics: false, sortBy: "views" });
 const setUser = (user: string) =>
 	UserStore.set((state: UserState) => ({ username: user }));
 
-// const setSetting = (setting: SettingState) =>
-// 	SettingStore.set((state: SettingState) => ({ ...state, ...setting }));
-
 const toggleShowTopics = () =>
 	SettingStore.set((state: SettingState) => ({
 		...state,
