@@ -238,3 +238,14 @@ body {
 	color: #fff;
 	border-radius: 7px;
 }
+
+.photos-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+	flex-wrap: wrap;
+	grid-gap: 2rem;
+	grid-row-gap: 2rem;
+	justify-content: center;
+	align-items: start;
+	min-height: 100vh;
+}

@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
+import { VirtuosoGrid } from "react-virtuoso";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
-import UserStore, { SettingStore } from "../src/store/store";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const PAGE_SIZE = 12;
+import UserStore, { SettingStore, setUser } from "../src/store/store";
+import { fetcher } from "../src/utils/utils";
+import { PAGE_SIZE } from "../src/config/config";
 
 const Layout = dynamic(() => import("../src/components/root.layout"), {
 	ssr: true,
@@ -15,113 +15,53 @@ const Layout = dynamic(() => import("../src/components/root.layout"), {
 const Photo = dynamic(() => import("../src/components/photo.card"), {
 	ssr: false,
 });
-const Tabs = dynamic(() => import("../src/components/tabs"), {
-	ssr: false,
-});
 
-type Props = { profile: string };
+type Props = { username: string };
 
-export default function Popular({ profile }: Props) {
+export default function Popular({ username }: Props) {
 	const state = useStore(UserStore);
 	const setting = useStore(SettingStore);
 	const { sortBy } = setting;
 
+	useEffect(() => {
+		setUser(username);
+	}, [username]);
+
 	const { data } = useSWR(
 		`/api/photos?username=${state.username}&p=1&per_page=${PAGE_SIZE}&type=top_gainers&order_by=${sortBy}`,
-		fetcher
+		fetcher,
+		{
+			revalidateOnFocus: false,
+		}
 	);
 
-	const photos = data ? [].concat(...data) : [];
-
-	// const sortByApprovedOn = photos.sort((a: Item, b: Item) => a.topics)
+	const photos = useMemo(() => (data ? [].concat(...data) : []), [data]);
 
 	return (
-		<Layout profile={profile}>
-			<Tabs />
-
+		<Layout username={username}>
 			{(data?.[0].errors && (
 				<pre>{JSON.stringify(data[0].errors, null, 4)}</pre>
 			)) || (
-				<div className="grid">
-					{photos.map((photo: Item, i) => (
+				<VirtuosoGrid
+					useWindowScroll
+					data={photos}
+					overscan={200}
+					itemContent={(i, photo: Item) => (
 						<Photo i={i} item={photo} key={photo.id} />
-					))}
-				</div>
+					)}
+					listClassName="photos-grid"
+				/>
 			)}
-
-			<style jsx>{`
-				.btn {
-					background-color: #141414;
-					border: 1px solid rgba(54, 54, 54, 0.6);
-					opacity: 1;
-					font-weight: 500;
-					position: relative;
-					outline: none;
-					border-radius: 50px;
-					padding: 1rem;
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					cursor: pointer;
-					margin-top: 0.5rem;
-				}
-
-				.form {
-					display: flex;
-					margin-top: 0.25rem;
-					border-radius: 0.375rem;
-					margin-bottom: 1rem;
-				}
-
-				.form-input {
-					border: 0;
-					background: #edf2f4;
-					color: #19191c;
-					padding: 0.5rem;
-					border-top-left-radius: 0.375rem;
-					border-bottom-left-radius: 0.375rem;
-				}
-
-				.form-button {
-					border: 0;
-					background: #edf2f4;
-					color: #19191c;
-					padding: 0.5rem;
-					cursor: pointer;
-					margin-left: 1px;
-					border-top-right-radius: 0.375rem;
-					border-bottom-right-radius: 0.375rem;
-				}
-
-				.grid {
-					display: grid;
-					grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-					flex-wrap: wrap;
-					grid-gap: 2rem;
-					grid-row-gap: 2rem;
-					justify-content: center;
-					align-items: start;
-					min-height: 100vh;
-				}
-
-				.pagination {
-					display: flex;
-					justify-content: center;
-					margin: 5rem 0 2rem;
-					flex-direction: column;
-					align-items: center;
-				}
-			`}</style>
 		</Layout>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-	const { profile } = query;
-	const user = profile || "onlysiamak";
+	const { username } = query;
+	const user = username || "onlysiamak";
 	return {
 		props: {
-			profile: user,
+			username: user,
 		},
 	};
 };

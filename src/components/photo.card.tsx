@@ -37,7 +37,6 @@ const Photo = ({ item, i }: Props) => {
 		? true
 		: item.topics.filter((e) => e.status === "approved").length > 0;
 
-	console.log(i);
 	return (
 		<div className="photo">
 			<div className="image">

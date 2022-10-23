@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { memo, useMemo, useEffect, useState } from "react";
 import Head from "next/head";
 import useSWR from "swr";
 import Image from "next/image";
@@ -7,28 +7,22 @@ import UserStore, { toggleShowTopics, setUser } from "../store/store";
 import Link from "next/link";
 import { useDoubleTap } from "../hooks/useDoubleClick";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+import { debounce, fetcher, numberWithCommas } from "../utils/utils";
 
 type Props = {
 	children: React.ReactNode;
-	profile: string;
+	username: string;
 };
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const debounce = (fn: Function, ms = 300) => {
-	let timeoutId: ReturnType<typeof setTimeout>;
-	return function (this: any, ...args: any[]) {
-		clearTimeout(timeoutId);
-		timeoutId = setTimeout(() => fn.apply(this, args), ms);
-	};
-};
-function numberWithCommas(str: number | string) {
-	return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+const Tabs = dynamic(() => import("../components/tabs"), {
+	ssr: true,
+});
 
-const Layout = ({ children, profile }: Props) => {
+const Layout = ({ children, username }: Props) => {
 	const state = useStore(UserStore);
 	const router = useRouter();
-	const [val, setVal] = useState(profile);
+	const [val, setVal] = useState(username);
 
 	const bind = useDoubleTap(() => {
 		toggleShowTopics();
@@ -38,7 +32,7 @@ const Layout = ({ children, profile }: Props) => {
 		setVal(event.target.value);
 		router.push(
 			{
-				query: { profile: event.target.value },
+				query: { username: event.target.value },
 			},
 			undefined,
 			{ shallow: true }
@@ -56,7 +50,10 @@ const Layout = ({ children, profile }: Props) => {
 
 	const { data, error } = useSWR(
 		`/api/profile?username=${state.username}`,
-		fetcher
+		fetcher,
+		{
+			revalidateOnFocus: false,
+		}
 	);
 
 	return (
@@ -66,7 +63,7 @@ const Layout = ({ children, profile }: Props) => {
 					name="viewport"
 					content="width=device-width, initial-scale=1, user-scalable=0"
 				/>
-				<title>@{profile} – Unsplash statistics</title>
+				<title>@{username} – Unsplash statistics</title>
 			</Head>
 
 			<section className="wrapper">
@@ -186,6 +183,8 @@ const Layout = ({ children, profile }: Props) => {
 					)}
 				</section>
 
+				<Tabs />
+
 				{children}
 
 				<div className="copyright">
@@ -287,7 +286,7 @@ const Layout = ({ children, profile }: Props) => {
 				.copyright {
 					display: flex;
 					justify-content: center;
-					margin: 2rem 0;
+					margin: 2rem 0 3rem;
 					flex-direction: column;
 					align-items: center;
 				}
@@ -461,4 +460,4 @@ const Layout = ({ children, profile }: Props) => {
 	);
 };
 
-export default Layout;
+export default memo(Layout);
