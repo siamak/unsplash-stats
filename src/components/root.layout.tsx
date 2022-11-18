@@ -91,7 +91,7 @@ const Layout = ({ children, username }: Props) => {
 					<div className="menu">
 						<Link
 							className="menu-link"
-							href={{ pathname: "/", query: { profile: state.username } }}
+							href={{ pathname: "/", query: { username: state.username } }}
 						>
 							<a>
 								<span>Overall</span>
@@ -102,7 +102,7 @@ const Layout = ({ children, username }: Props) => {
 							className="menu-link"
 							href={{
 								pathname: "/popular",
-								query: { profile: state.username },
+								query: { username: state.username },
 							}}
 						>
 							<a>
