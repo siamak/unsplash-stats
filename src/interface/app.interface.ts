@@ -2,6 +2,7 @@ export interface Image {
 	regular: string;
 	width: number;
 	height: number;
+	blur_hash: string;
 }
 
 export interface Value {
@@ -59,6 +60,7 @@ export interface Item {
 	topics: Topcis[];
 	link: string;
 	image: Image;
+	evaluation_status: string;
 	likes: number;
 	statistics: Statistics;
 	gains: number;

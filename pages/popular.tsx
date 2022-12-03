@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
-import { VirtuosoGrid } from "react-virtuoso";
 import { Item } from "../src/interface/app.interface";
 import { GetServerSideProps } from "next";
 import { useStore } from "laco-react";
@@ -42,15 +41,20 @@ export default function Popular({ username }: Props) {
 			{(data?.[0].errors && (
 				<pre>{JSON.stringify(data[0].errors, null, 4)}</pre>
 			)) || (
-				<VirtuosoGrid
-					useWindowScroll
-					data={photos}
-					overscan={200}
-					itemContent={(i, photo: Item) => (
+				<div className="photos-grid">
+					{photos.map((photo: Item, i) => (
 						<Photo i={i} item={photo} key={photo.id} />
-					)}
-					listClassName="photos-grid"
-				/>
+					))}
+				</div>
+				// <VirtuosoGrid
+				// 	useWindowScroll
+				// 	data={photos}
+				// 	overscan={200}
+				// 	itemContent={(i, photo: Item) => (
+				// 		<Photo i={i} item={photo} key={photo.id} />
+				// 	)}
+				// 	listClassName="photos-grid"
+				// />
 			)}
 		</Layout>
 	);

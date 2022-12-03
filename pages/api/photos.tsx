@@ -54,6 +54,8 @@ const topGainers = async (user: string, sort: string) => {
 							regular: d.urls.regular,
 						},
 
+						evaluation_status: d.evaluation_status,
+
 						likes: d.likes,
 						statistics: {
 							views: d.statistics.views,
@@ -93,7 +95,10 @@ const topGainers = async (user: string, sort: string) => {
 							width: d.width,
 							height: d.height,
 							regular: d.urls.regular,
+							blur_hash: d.blur_hash,
 						},
+
+						evaluation_status: d.evaluation_status,
 
 						likes: d.likes,
 						statistics: {
@@ -157,7 +162,10 @@ const photos = async (req: NextApiRequest, res: NextApiResponse<Item[]>) => {
 						width: d.width,
 						height: d.height,
 						regular: d.urls.regular,
+						blur_hash: d.blur_hash,
 					},
+
+					evaluation_status: d.evaluation_status,
 
 					likes: d.likes,
 					statistics: {

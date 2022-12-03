@@ -1,9 +1,11 @@
 import React, { memo } from "react";
 import { LineChart, Line, Tooltip, ResponsiveContainer } from "recharts";
 import Image from "next/image";
-import { Item } from "../interface/app.interface";
 import { useStore } from "laco-react";
+// import useNextBlurhash from "use-next-blurhash";
+import { Item } from "../interface/app.interface";
 import { SettingStore } from "../store/store";
+import useBlurData from "../hooks/useBlurHash";
 
 type Props = {
 	item: Item;
@@ -37,6 +39,8 @@ const Photo = ({ item, i }: Props) => {
 		? true
 		: item.topics.filter((e) => e.status === "approved").length > 0;
 
+	const [blurDataUrl] = useBlurData(item.image.blur_hash);
+
 	return (
 		<div className="photo">
 			<div className="image">
@@ -46,6 +50,8 @@ const Photo = ({ item, i }: Props) => {
 					layout="fill"
 					loading="lazy"
 					objectFit="cover"
+					placeholder={blurDataUrl ? "blur" : "empty"}
+					blurDataURL={blurDataUrl}
 				/>
 			</div>
 			<h3 className="heading">
